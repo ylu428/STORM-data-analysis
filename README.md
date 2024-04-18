@@ -25,4 +25,5 @@
 
 ### Step 3:
 - Read files created in step 1 ("_NP.tif" and "_SMLs.csv").
-- Utilize the user interface to select and read 
+- Utilize the user interface to select and read all NP_f1.tif files for a single sample.
+- 
