@@ -1,7 +1,17 @@
-function test_result = process1(folder_name, raw_tif_filename, SMLs_filename, select_NP )
-     if ~isnumeric(select_NP)
-        error('select_NP must be a numeric array.');
-     end
+function test_result = process1(folder_name, raw_tif_filename, SMLs_filename, select_NP,start_frame, end_frame)
+    
+    arguments % set the default value for "start_frame" and "end_frame"
+        folder_name;
+        raw_tif_filename;
+        SMLs_filename;
+        select_NP;
+        start_frame double =1010;
+        end_frame double =21009;
+    end
+
+    if ~isnumeric(select_NP)
+       error('select_NP must be a numeric array.');
+    end
     disp("Start of processs 1 function")
     % Find the exact filenames based on given raw_tif_filename & SMLs_filename
     realnameTIF = dir(fullfile(raw_tif_filename));
@@ -18,29 +28,29 @@ function test_result = process1(folder_name, raw_tif_filename, SMLs_filename, se
     % Initialization
 
     offset = 0;
-    first_frame_NP = 11;
-    first_frame_NP_after_prebleach = 1011;
-    first_frame_GFP = 1;
-    start_frame = 1010; % GFP 0-9, pre-bleach 10-1009 frames
-    end_frame = 21009; % total 40k frames
+    % first_frame_NP = 11;
+    % first_frame_NP_after_prebleach = 1011;
+    % first_frame_GFP = 1;
+    % start_frame = 1010; % GFP 0-9, pre-bleach 10-1009 frames
+    % end_frame = 21009; % total 40k frames
     start_frame = start_frame + offset;
     end_frame = end_frame + offset;
     minSMLs_driftcorr = (end_frame - start_frame + 1) * 0.7;
     nm_per_pixel = 116.999998688698;
-    precision_xy_thr = 20;
-    precision_z_thr = inf;
-    GFP_loc_thr = 200;
-    GFP_SMLs_stdev_thr = 30;
-    GFP_SMLs_stdev_thr_z = 60;
+    % precision_xy_thr = 20;
+    % precision_z_thr = inf;
+    % GFP_loc_thr = 200;
+    % GFP_SMLs_stdev_thr = 30;
+    % GFP_SMLs_stdev_thr_z = 60;
     FWHMthr = 20;
     search_radius_nm = 200; % particle size = 200 nm
-    runDBSCAN = false;
-    DBSCAN_eps_1 = 15; % 20 nm cluster size
-    if_2D = true;
+    % runDBSCAN = false;
+    % DBSCAN_eps_1 = 15; % 20 nm cluster size
+    % if_2D = true;
     if_outputimage = true;
-    clus_max_axis_thr = inf;
-    clu1_counts = 0;
-    doparse = true;
+    % clus_max_axis_thr = inf;
+    % clu1_counts = 0;
+    % doparse = true;
 
      % Adjusting TopDir and Mypath
     [~, name, ~] = fileparts(realnameTIF.name); % Extract the directory and filename separately
@@ -60,7 +70,7 @@ function test_result = process1(folder_name, raw_tif_filename, SMLs_filename, se
     % parse_particle_filename = strcat('*', SMLs_filename, '_NP_Particles.mat');
     delete_NP=[ ...
            ];
-select_NP=select_NP
+
     % Load particle info (adjust as needed)
     particleFilePath = strcat(TopDir, matlaboutbase, SMLs_filename, '_NP_Particles.mat');
     if exist(particleFilePath, 'file')
@@ -467,7 +477,7 @@ select_NP=select_NP
         end 
     
           test_result.folder= folder_name;
-          test_result.NP1_fif_file = raw_tif_file;
+          test_result.NP1_tif_file = raw_tif_file;
           test_result.SML_file = realnameCSV.name;
           test_result.prebleach_driftcorr_x = num2str(prebleach_driftcorr_x);
           test_result.prebleach_driftcorr_y = num2str(prebleach_driftcorr_y);
