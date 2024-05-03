@@ -1,5 +1,5 @@
-addpath(genpath('Z:\Yen-Cheng\YCC_Matlab'));
-addpath(genpath('Z:\Yi-Han\ONI_Storm\Yi-Han_edited_code\MATLAB_library'))
+addpath(genpath('M:\Yen-Cheng\YCC_Matlab'));
+addpath(genpath('M:\Yi-Han\ONI_Storm\Yi-Han_edited_code\MATLAB_library'))
 
 
 colors = [ [0,0,0]; [1,0,0]; [0,1,0]; [0,0,1]; [1,0,1]; [0,1,1];
@@ -22,7 +22,7 @@ thr_too_close_pix=5;
 
 search_radius_nm = 200; %particle size = 200 nm
 maxSMLs_1=3000;
-minSMLs_1=[20 60];% 90 120 180];
+minSMLs_1=[20];% 90 120 180];
 % minSMLs_2 = 5;
 runDBSCAN = false;
 DBSCAN_eps_1 = 15; %15 nm cluster size
@@ -40,66 +40,50 @@ total_frame=20000;
 
 first_frame_NP_after_prebleach=1011;
 
-% Change the value of following two variables based on previous analysis.
-% If there's no previous analysis, leave these two value as 1
-stand_SML_n = 1;
-Curr_SML_n = 1;
 
 % Automatically plot the clustering ratio for all the input data. 
 % Yes = 1; No = 0.
 plot_clus_r = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Yi-Han %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[MyGFPfiles_A,Mypath_A] = uigetfile({'*.tif; *.tiff';'*.xlsx';'*.mat';'*.*'}, ...
-    'Select "GFP_f1.tif" files for sample A', 'MultiSelect','on');
-[MyGFPfiles_B,Mypath_B] = uigetfile({'*.tif; *.tiff';'*.xlsx';'*.mat';'*.*'}, ...
-    'Select "GFP_f1.tif" files for sample B', 'MultiSelect','on', Mypath_A);
+Sample = {'A', 'B', 'C', 'D', 'E', 'F'}; % Manually type in the sample name.
 
-if Mypath_B ~= 0
-    diff_folder = setdiff(strsplit(Mypath_A, filesep), strsplit(Mypath_B, filesep));
-    parts = strsplit(Mypath_A, filesep);
-    parent_path = strcat(strjoin(parts(1:find(strcmp(parts, diff_folder{1}))-1), filesep), '\');   
-    sample = {'Mature HIV', 'Immature HIV'};
+% Change the value of following two variables based on previous analysis.
+% If there's no previous analysis, leave these two value as 1
+stand_SML_n = [1 2 3 4 5 6];
+Curr_SML_n = [1 2 3 4 5 6];
 
-else
-    parts = strsplit(Mypath_A, filesep);
-    parent_path = strcat(strjoin(parts(1:length(parts)-2), filesep), '\');
-    sample = {'Mature HIV'};
-end
-
-SMLs_result(2:length(sample)+1,1) = sample;
-
-for s = 1:length(sample)
+SMLs_result(2:length(Sample)+1,1) = Sample;
+for s = 1:length(Sample)
     if s == 1
-        disp('MyGFPfiles = MyGFPfiles_A')
-        MyGFPfiles = MyGFPfiles_A;
-        Mypath = Mypath_A;
-    elseif  s == 2
-        disp ('MyGFPfiles = MyGFPfiles_B')
-        MyGFPfiles = MyGFPfiles_B;
-        Mypath = Mypath_B;
+        [MyGFPfiles,Mypath] = uigetfile({'*.tif; *.tiff';'*.xlsx';'*.mat';'*.*'}, ...
+        strcat('Select "GFP_f1.tif" files for sample', " ", Sample(s)), 'MultiSelect','on');
+    else
+        [MyGFPfiles,Mypath] = uigetfile({'*.tif; *.tiff';'*.xlsx';'*.mat';'*.*'}, ...
+        strcat('Select "GFP_f1.tif" files for sample', " ", Sample(s)), 'MultiSelect','on', Mypath);
     end
+
+    AllPath.(strcat('Mypath_', Sample{s})) = Mypath;
+    AllGFPfiles.(strcat('MyGFPfiles_', Sample{s})) = MyGFPfiles;
+
+end
+% Use seperate loops to avoid user waiting to select the files.
+name1 = fieldnames(AllPath);
+name2 = fieldnames(AllGFPfiles);
+for s = 1:length(Sample)
     
+    Mypath = AllPath.(name1{s});
+    MyGFPfiles = AllGFPfiles.(name2{s});
+
+
     if ischar(MyGFPfiles)==1 % change char array into cell array. This is required when only one file exists in "MyGFPfiles".
         MyGFPfiles = {MyGFPfiles};
     end
-    %%% set the shared parent folder of two samples %%%
+    
  
     
     
     MyGFPdata=cell(2,length(MyGFPfiles));
-%     for i = 1:length(MyGFPfiles)
-%         temp = split(MyGFPfiles{i}, '.');
-%         temp1 = split(temp(1), '_GFP_f1');  % filename with number
-%         temp2 = split(char(temp1(1)), '-');
-%         sample_name = strjoin(temp2(1:(end-1)),'-'); % % filename without number
-%         base_name = strcat(char(temp1{1}), '_SMLS');
-%         MyGFPdata{1,i} = temp(1);    
-%         MyGFPdata{2,i} = imread(strcat(Mypath,MyGFPfiles{i}));
-%         
-%     end 
-%     temp1 = split(char(MyGFPdata{1,1}), '_');
-%     temp2 = split(char(MyGFPdata{1,1}), '_GFP');
     img_out = strcat(Mypath,'analysis\', 'output\', 'image_output\');
     clusinfo = strcat(Mypath,'analysis\', 'output\', 'clusinfo\');
     mkdir(img_out)
@@ -113,12 +97,6 @@ for s = 1:length(sample)
     GFPSMLs_filename_mat = '_GFP_Particles_GFPSMLs';
     NPSMLs_filename_mat = '_NP_Particles';
 
-%     which_virus_prep=temp1{3};
-% 
-%     raw_tif_filename = strcat(temp2{1},'-');
-%     base_name = strcat('510_', which_virus_prep, '_HXB2_2G12_SML-');
-%     TopDir = strcat('510_', which_virus_prep,'_HXB2_2G12-');
-%     matlaboutbase = strcat(Mypath, 'output0601\');
     
     matlaboutbase = strcat(Mypath, 'output042024\');
     
@@ -303,7 +281,7 @@ for s = 1:length(sample)
                 select_thispart_mat=select_thispart_mat(AllParticles(par).SMLLabel.Photons>photon_thr,:);
                 
                 % Randomly select the SMLs
-                select_thispart_mat = rand_select(select_thispart_mat, stand_SML_n, Curr_SML_n); 
+                select_thispart_mat = rand_select(select_thispart_mat, stand_SML_n(s), Curr_SML_n(s)); 
     
                 AllParticles(par).NumSMLLabel1=size(select_thispart_mat,1);
                 AllParticles(par).SMLLabel= array2table(select_thispart_mat,...
@@ -446,6 +424,9 @@ for s = 1:length(sample)
         NewcompileSML = GFPfilter(compileSMLs_clus, 100000);    % delete clusters with intensities above the th
         title = {("SMLs") ("clus #") ("mean density") ("mean area") ("SMLs per clus") ("Vpr-GFP")};
         NewcompileSML2 = [title; num2cell(NewcompileSML)]; 
+        %%% set the shared parent folder of two samples %%%
+        parent_path = find_parent_dir(AllPath);
+        
         writecell(NewcompileSML2,strcat(parent_path, sample_name, '_clus_result', '.xlsx'), ...
             'sheet',strcat(sample_name, num2str(CurrminSML),'SMLs'))
         SMLs_result{1, i+1} = minSMLs_1(i);
@@ -453,7 +434,7 @@ for s = 1:length(sample)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Yi-Han %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-        if if_pdist==1
+        if if_pdist
            save(strcat(OutDirSum, '_pdist_af647_af647.mat'),'cumdist_AF647', '-v7.3');
         end
         save(strcat(OutDirSum, '_allphotons.mat'),'all_photons');
@@ -464,11 +445,17 @@ for s = 1:length(sample)
         save(strcat(OutDirSum, '_row_too_close_to_remove.mat'),'all_par_remove');
         
     end
+    %%% display median of SML per Virion
+    M = median(NewcompileSML(:, 1),"omitmissing");
+    disp(sample_name)
+    disp(strcat("Median of SML per virion = ", num2str(M)))
+
 end
 
 if plot_clus_r ==1
     Clustering_ratio(minSMLs_1, sample, SMLs_result, parent_path, sample_name)
 end
+
 
 function comp = GFPfilter(data, MaxInt) % delete all of the data with intensity above "MaxInt"
     comp = data;
