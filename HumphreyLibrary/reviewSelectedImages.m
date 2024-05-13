@@ -68,4 +68,20 @@ function selectedImages = reviewSelectedImages(imageDir, selectedImages)
         cla reset; % Clear the subplot
         title(sprintf('Image %d Removed', index)); % Indicate removal
         % Check if all images are marked for removal to close the figure
-        if
+        if all(removeIndices)
+            uiresume(fig); % Resume execution if all images are removed
+        end
+    end
+    
+    % Callback function for the "Skip" button
+    function skipReviewCallback(~, ~)
+        uiresume(fig); % Resume execution, skipping the review
+        close(fig); % Close the figure window
+    end
+
+    % Callback function for the "Done" button
+    function doneReviewCallback(~, ~)
+        uiresume(fig); % Resume execution, indicating the review is done
+        close(fig); % Close the figure window
+    end
+end

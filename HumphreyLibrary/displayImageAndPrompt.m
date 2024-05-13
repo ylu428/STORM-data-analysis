@@ -80,4 +80,10 @@ function userInput = displayImageAndPrompt(imageDir, filename, currentImage, tot
     % Nested function for button callbacks
     function btnCallback(~, ~, choice)
         userInput = choice; % Set the user input based on the button pressed
-        selectionMade = true; % Mark that a selection has b
+        selectionMade = true; % Mark that a selection has been made
+        uiresume(fig); % Resume execution
+        if ishandle(fig)
+            close(fig); % Close the figure window
+        end
+    end
+end

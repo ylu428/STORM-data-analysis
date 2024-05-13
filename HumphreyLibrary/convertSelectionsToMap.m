@@ -17,4 +17,12 @@ function selections = convertSelectionsToMap(selectedImages)
                 % If testID already exists, append particleNumber to its list
                 selections(testID) = [selections(testID), particleNumber];
             else
-                % Otherwise, create a new entry with this 
+                % Otherwise, create a new entry with this testID and particleNumber
+                selections(testID) = [particleNumber];
+            end
+        end
+    end
+    
+    % Return the map of selections
+    return;
+end

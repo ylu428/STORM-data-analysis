@@ -69,4 +69,9 @@ function [file_list, folder_name] = processCSV(csvFilePath, imageDir)
         end
     end
 
-    % Optionally, display selected files and their d
+    % Optionally, display selected files and their details
+    for i = 1:length(file_list)
+        fprintf('TIFF File: %s, CSV File: %s, Test ID: %s, Selected NPs: %s\n', ...
+                file_list{i}{1}, file_list{i}{2}, testID, mat2str(file_list{i}{3}));
+    end
+end

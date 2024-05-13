@@ -59,3 +59,77 @@ function [csvFilePath, imageDir] = processImagesAndSaveToCSV()
     % Convert the list of selected and reviewed images back into selections map
     selections = convertSelectionsToMap(selectedImages);
     
+    % Update the CSV with the final selections
+    updateCSV(csvFilePath, selections);
+    return;
+end
+
+function selectedFiles = selectImagesForProcessing(imageDir, imageFiles)
+    % Creates a figure to display images with an "X" to remove them, excluding certain patterns
+    screenSize = get(0, 'ScreenSize');
+    figWidth = screenSize(3) * 0.7; % 70% of the screen width
+    figHeight = screenSize(4) * 0.7; % 70% of the screen height
+    figX = (screenSize(3) - figWidth) / 2; % Center horizontally
+    figY = (screenSize(4) - figHeight) / 2; % Center vertically
+
+    fig = figure('Name', 'Select Images for Processing', 'NumberTitle', 'off', 'Toolbar', 'none', 'MenuBar', 'none', ...
+                 'Position', [figX, figY, figWidth, figHeight]);
+
+    % Filter imageFiles based on exclusion criteria
+    filteredImageFiles = filterImages(imageFiles);
+    numImages = length(filteredImageFiles);
+    sqrtNum = ceil(sqrt(numImages)); % Calculate grid size for a somewhat square layout
+    removeIndices = false(1, numImages);
+
+    for i = 1:numImages
+        img = imread(fullfile(imageDir, filteredImageFiles{i}));
+        ax = subplot(sqrtNum, sqrtNum, i);
+        imshow(img, 'Parent', ax);
+        title(ax, sprintf('Image %d', i));
+
+        % Calculate "X" button size relative to the subplot size
+        btnSize = min(ax.Position(3:4)) * 0.15;
+
+        % Calculate "X" button position relative to the subplot
+        btnPos = [ax.Position(1) + ax.Position(3) - btnSize, ax.Position(2) + ax.Position(4) - btnSize, btnSize, btnSize];
+
+        % Add "X" button or clickable text
+        uicontrol('Style', 'pushbutton', 'String', 'X', 'Units', 'normalized', ...
+                  'Position', btnPos, 'Callback', {@removeImageCallback, i});
+    end
+
+    % Add a "Done" button to finalize the selections
+    uicontrol('Style', 'pushbutton', 'String', 'Done', 'Units', 'normalized', ...
+              'Position', [0.5 - 0.05, 0.01, 0.1, 0.05], 'Callback', @doneSelectionCallback);
+
+    % Wait for the user to finish with the figure before continuing
+    uiwait(fig);
+    
+    selectedFiles = filteredImageFiles(~removeIndices);
+    close(fig);
+
+    function filteredFiles = filterImages(imageFiles)
+        % Exclude files ending in 'hist_ori' or matching specific unwanted patterns
+        unwantedPatterns = {'hist_ori', 'hist_corr'};
+        filteredFiles = {};
+        for idx = 1:length(imageFiles)
+            skipFile = any(cellfun(@(pattern) endsWith(imageFiles{idx}, pattern), unwantedPatterns));
+            if ~skipFile
+                filteredFiles{end+1} = imageFiles{idx};
+            end
+        end
+    end
+
+    % Callback function to remove an image
+    function removeImageCallback(~, ~, index)
+        removeIndices(index) = true; % Mark image for removal
+        subplot(sqrtNum, sqrtNum, index); % Select the subplot
+        cla reset; % Clear the subplot
+        title(sprintf('Image %d Removed', index)); % Indicate removal
+    end
+
+    % Callback function for the "Done" button
+    function doneSelectionCallback(~, ~)
+        uiresume(fig); % Resume execution, indicating selection completion
+    end
+end
