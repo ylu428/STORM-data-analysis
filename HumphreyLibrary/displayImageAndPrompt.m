@@ -1,3 +1,6 @@
+% This function displays an image and prompt the user for input.
+% This script shows an image, and prompts the user with Yes, No, and Done buttons to decide whether to save the image.
+
 function userInput = displayImageAndPrompt(imageDir, filename, currentImage, totalImages)
     % Define persistent variable to store the user input
     persistent selectionMade;
@@ -32,8 +35,8 @@ function userInput = displayImageAndPrompt(imageDir, filename, currentImage, tot
         'Position', [10, 10, 300, 20], 'BackgroundColor', 'white', 'FontSize', 13);
     
     % Calculate button size and position based on the figure size
-    buttonWidth = 100; % Adjusted button width for fitting
-    buttonHeight = 40; % Adjusted button height
+    buttonWidth = 100; % Button width
+    buttonHeight = 40; % Button height
     buttonYPosition = 40; % Distance from the bottom of the figure
     buttonSpacing = 10; % Space between buttons
     
@@ -75,12 +78,6 @@ function userInput = displayImageAndPrompt(imageDir, filename, currentImage, tot
     end
 
     % Nested function for button callbacks
-    function btnCallback(src, event, choice)
+    function btnCallback(~, ~, choice)
         userInput = choice; % Set the user input based on the button pressed
-        selectionMade = true; % Mark that a selection has been made
-        uiresume(fig); % Resume execution
-        if ishandle(fig)
-            close(fig); % Close the figure window
-        end
-    end
-end
+        selectionMade = true; % Mark that a selection has b

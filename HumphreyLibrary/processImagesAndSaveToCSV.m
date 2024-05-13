@@ -1,5 +1,7 @@
-function [csvFilePath, imageDir] = processImagesAndSaveToCSV()
+% This script processes images in a selected directory, allows for manual selection of relevant images, and saves the selected data to a CSV file. 
+% It provides a UI for selecting the image directory and displays images with options to exclude them before processing.
 
+function [csvFilePath, imageDir] = processImagesAndSaveToCSV()
     % Use UI to get the directory containing the images
     imageDir = uigetdir('*.*', 'Select the folder holding NP images');
     if imageDir == 0
@@ -8,23 +10,23 @@ function [csvFilePath, imageDir] = processImagesAndSaveToCSV()
         return;
     end
     
+    % Display and select images before processing
+    allImageFiles = dir(fullfile(imageDir, '*_NP_SML.png')); 
+    selectedImages = selectImagesForProcessing(imageDir, {allImageFiles.name});
+    
     % Set the CSV file path directly without prompting the user
     csvFilePath = fullfile(imageDir, 'Selected_NP.csv');
     
     % Initialize a container for selections
     selections = containers.Map('KeyType', 'char', 'ValueType', 'any');
     
-    % Initialize a list to store filenames of selected images
-    selectedImages = {};
+    % Load and filter selected images
+    totalImages = length(selectedImages); % Total number of selected images
     
-    % Load and filter images
-    images = dir(fullfile(imageDir, '*_NP_SML.png'));
-    totalImages = length(images); % Total number of images
-    
-    % Process each image
+    % Process each selected image
     try
         for i = 1:totalImages
-            filename = images(i).name;
+            filename = selectedImages{i};
             
             % Filter and parse filename
             [isRelevant, testID, particleNumber] = parseAndFilterFilename(filename);
@@ -40,7 +42,6 @@ function [csvFilePath, imageDir] = processImagesAndSaveToCSV()
                     else
                         selections(testID) = [particleNumber];
                     end
-                    selectedImages{end+1} = filename; % Store filename for review
                 elseif userInput == -1
                     % If 'Done' button is clicked, break the loop
                     break; % Exit the loop early
@@ -55,12 +56,6 @@ function [csvFilePath, imageDir] = processImagesAndSaveToCSV()
         end
     end
     
-    % After processing, call reviewSelectedImages to allow user to review and possibly remove selections
-    selectedImages = reviewSelectedImages(imageDir, selectedImages);
     % Convert the list of selected and reviewed images back into selections map
     selections = convertSelectionsToMap(selectedImages);
     
-    % Update the CSV with the final selections
-    updateCSV(csvFilePath, selections);
-    return;
-end

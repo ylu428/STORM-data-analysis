@@ -1,13 +1,14 @@
-function updateCSV(csvFilePath, selections)
-    fid = fopen(csvFilePath, 'w');
-    keys = selections.keys;
+% updateCSV.m
+% This script updates a CSV file with the corresponding images and nano  particiles extracted from the selection process
+
+% Function to update a CSV file
+function updateCSV(filename, data)
+    % Read the existing CSV data
+    existingData = readtable(filename);
     
-    for i = 1:length(keys)
-        testID = keys{i};
-        particleNumbers = selections(testID);
-        % Format the line as 'TestID: number number number...'
-        fprintf(fid, '%s: %s\n', testID, num2str(particleNumbers, '%d '));
-    end
+    % Update the existing data with the new data
+    updatedData = [existingData; data];
     
-    fclose(fid);
+    % Write the updated data back to the CSV file
+    writetable(updatedData, filename);
 end

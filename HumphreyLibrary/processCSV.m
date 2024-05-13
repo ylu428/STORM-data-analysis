@@ -1,3 +1,7 @@
+% This Function processes a CSV file and match its data with corresponding TIFF and CSV files in a selected directory.
+% This script reads test IDs and particle numbers from the CSV file, matches them with files in the directory,
+% and outputs a list of matched file sets.
+
 function [file_list, folder_name] = processCSV(csvFilePath, imageDir)
     % Open the CSV file for reading
     fileID = fopen(csvFilePath, 'r');
@@ -6,11 +10,10 @@ function [file_list, folder_name] = processCSV(csvFilePath, imageDir)
         error('Failed to open file: %s', csvFilePath);
     end
 
-    % Initialize a map to store test IDs and their corresponding particle
-    % numbers
+    % Initialize a map to store test IDs and their corresponding particle numbers
     fileMap = containers.Map('KeyType', 'char', 'ValueType', 'any');
 
-    % Read each line from the CSV
+    % Read each line from the CSV file
     line = fgetl(fileID);
     while ischar(line)
         parts = strsplit(line, ':');
@@ -21,7 +24,7 @@ function [file_list, folder_name] = processCSV(csvFilePath, imageDir)
         testID = strtrim(parts{1});
         nums = strtrim(parts{2});
         nums = strsplit(nums, ' ');
-        nums = nums(~cellfun('isempty', nums));
+        nums = nums(~cellfun('isempty', nums)); % Remove empty elements
         nums = str2double(nums);
 
         fileMap(testID) = nums;
@@ -37,7 +40,7 @@ function [file_list, folder_name] = processCSV(csvFilePath, imageDir)
         error('No folder selected');
     end
 
-    % Prepare to match files
+    % Get lists of TIFF and CSV files in the selected folder
     tif_files = dir(fullfile(folder_name, '*.tif'));
     csv_files = dir(fullfile(folder_name, '*.csv'));
 
@@ -48,9 +51,6 @@ function [file_list, folder_name] = processCSV(csvFilePath, imageDir)
     for i = 1:length(fileKeys)
         testID = fileKeys{i};
         % Patterns to match file names
-        % tif_pattern = strcat('*', testID, '*_NP_f1.tif');
-        % csv_pattern = strcat('*', testID, '*_SMLs.csv');
-
         tif_pattern = strcat('*', testID, '_NP_f1.tif');
         csv_pattern = strcat('*', testID, '_SMLs.csv');
 
@@ -58,9 +58,9 @@ function [file_list, folder_name] = processCSV(csvFilePath, imageDir)
         matched_tif = dir(fullfile(folder_name, tif_pattern));
         matched_csv = dir(fullfile(folder_name, csv_pattern));
 
-        % If matches are found for both TIFF and CSV
+        % If matches are found for both TIFF and CSV files
         if ~isempty(matched_tif) && ~isempty(matched_csv)
-            tif_full_path = fullfile(folder_name, matched_tif(1).name); % Assuming first match is desired one
+            tif_full_path = fullfile(folder_name, matched_tif(1).name); % Assuming first match is the desired one
             csv_full_path = fullfile(folder_name, matched_csv(1).name);
 
             % Append this file set to the list
@@ -69,9 +69,4 @@ function [file_list, folder_name] = processCSV(csvFilePath, imageDir)
         end
     end
 
-    % Optionally, display selected files and their details
-    for i = 1:length(file_list)
-        fprintf('TIFF File: %s, CSV File: %s, Test ID: %s, Selected NPs: %s\n', ...
-                file_list{i}{1}, file_list{i}{2}, testID, mat2str(file_list{i}{3}));
-    end
-end
+    % Optionally, display selected files and their d
