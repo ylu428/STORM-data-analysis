@@ -3,7 +3,7 @@
 
 ### Step 1: 
 - Read raw STORM data from NanoImager (Unprocessed tif image files and SMLs.csv).
-- Utilize the user interface to select and read TIF files for all fields within a single sample.
+- Utilize the user interface to select and read **tif files** for all fields within a single sample.
 - A folder containing "SMLs.csv" and single-frame images for each field will be created/saved.
 - For each field of view (FOV), three single-frame images will be extracted from the raw image. They are:
   - first_frame_GFP=3: Taken from frame #3, used for locating GFPs and NPs in subsequent steps.
@@ -15,25 +15,27 @@
 
 ### Step 2: 
 - Read raw image data from DeltaVision. Skip this step if no DV data was taken.
-- Utilize the user interface to select and read dv files for all fields within a single sample.
+- Utilize the user interface to select and read **dv files** for all fields within a single sample.
 - Automatically find all the particles by analyzing the intensities of GFP and AF647.
 - Plot the cumulative distribution of GFP and AF647 intensities.
 - Save images with particles found and cumulative distribution in the folder "output"
 - Save particle information, including coordinates and intensities for each channel, into an Excel file.
-- Need libraries.
-- Original filename: A_GFP_Vpr_IF_2dyes_YiHan.
+- Need libraries in "YCC_Matlab"
+- Original filename: A_GFP_Vpr_IF_2dyes_YiHan.m
 
 ### Step 3:
 - Read files created in step 1 ("_NP.tif" and "_SMLs.csv").
-- Utilize the user interface to select and read all NP_f1.tif files for a single sample.
+- Utilize the user interface to select and read all **NP_f1.tif** files for a single sample.
 - Mapreduce process takes a long time. It could be 1-10 hours or more depends on number of fields and how many NPs per field.
 - Two folders will be created: "MapReduceFiles" and "output".
   - MapReduceFiles: Results of mapreduce are saved here.
   - output:
-    1. "*_SMLs_NP_Particles.m": mat file. Info of all nanoparticles.
+    1. "*_SMLs_NP_Particles.mat": MATLAB data file. Info of all nanoparticles.
     2. "*_SMLsNP_part-detection.png": Detected NPs.
     3. "*_SMLsNP_part-filtering.png": Cumulative distribution function of particles.  Upper left: corrected sum of signal; upper right: signal-to-noise ratio; lower left: resolving power; lower right: percentage of background pixel.
     4. **image_output**: a folder where NP localization distribution plots are saved.
+- Need libraries in "YCC_Matlab".
+- Original filename: one_dSTORM_ONI_parse_NP.m
 
 ### Step 4:
-- Drift correction processing
+- Drift correction processing.
