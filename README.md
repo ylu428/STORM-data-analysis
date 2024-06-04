@@ -26,4 +26,14 @@
 ### Step 3:
 - Read files created in step 1 ("_NP.tif" and "_SMLs.csv").
 - Utilize the user interface to select and read all NP_f1.tif files for a single sample.
-- 
+- Mapreduce process takes a long time. It could be 1-10 hours or more depends on number of fields and how many NPs per field.
+- Two folders will be created: "MapReduceFiles" and "output".
+  - MapReduceFiles: Results of mapreduce are saved here.
+  - output:
+    1. *_SMLs_NP_Particles.m: mat file. Info of all nanoparticles.
+    2. *_SMLsNP_part-detection.png: Detected NPs.
+    3. *_SMLsNP_part-filtering.png: Cumulative distribution function of particles.  Upper left: corrected sum of signal; upper right: signal-to-noise ratio; lower left: resolving power; lower right: percentage of background pixel.
+    4. image_output: a folder where NP localization distribution plots are saved.
+
+### Step 4:
+- Drift correction processing
