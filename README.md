@@ -20,7 +20,7 @@
 - Plot the cumulative distribution of GFP and AF647 intensities.
 - Save images with particles found and cumulative distribution in the folder "output"
 - Save particle information, including coordinates and intensities for each channel, into an Excel file.
-- Need libraries in "YCC_Matlab"
+- Need libraries in "*YCC_Matlab*"
 - Original filename: **A_GFP_Vpr_IF_2dyes_YiHan.m**
 
 ### Step 3: Locate the nanoparticles in each field and identify the single molecule localizations originating from the nanoparticles.
@@ -41,7 +41,7 @@
       - lower left: resolving power;
       - lower right: percentage of background pixel.
     4. **image_output**: a folder where NP localization distribution plots are saved.
-- Need libraries in "YCC_Matlab".
+- Need libraries in "*YCC_Matlab*".
 - Original filename: **one_dSTORM_ONI_parse_NP.m**
 
 ### Step 4: Drift correction processing.
@@ -62,7 +62,7 @@
   - "\*_SMLs_NP_drift.png", "\*_NP_hist_corr.png", "\*NP_hist_ori.png", "\*_NP_merge_corr.png", "\*_NP_merge_ori.png" will be created and saved for each valid NP.
   - After drift correction complete, "Selected_NP.csv" will be saved in the "image_output" folder.
   - "\*_SMLs_driftcorr.mat" files will be saved in the "output" folder for fields that has been drift-corrected.
-- Need libraries in "\Yi-Han_edited_code\MATLAB_library" and "\Yi-Han_edited_code\MATLAB_library\HumphreyLibrary".
+- Need libraries in "*\Yi-Han_edited_code\MATLAB_library*" and "*\Yi-Han_edited_code\MATLAB_library\HumphreyLibrary*".
 - Original filename: **two_dSTORM_ONI_bead_driftcorr_Step4_v2.m**.
 
 ### Step 5: Locate the virion in each field and identify the single molecule localizations originating from the immunofluorescence.
