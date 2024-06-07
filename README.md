@@ -69,4 +69,6 @@
 - The program will read files created in step 1 ("_GFP.tif" and "_SMLs.csv").
 - Utilize the user interface to select and read all **GFP_f1.tif** files for a single sample.
 - Set the **start frame** and **end frame** correctly based on the light program you used in imaging acquisition step.
-- Mapreduce process takes a long time. It could be 1-10 hours or more depends on number of fields and how many virions per field.
+- Mapreduce process takes a long time. It could be 1-10 hours or more depends on number of fields, number of channels and how many virions per field.
+- Results of mapreduce are saved in the "MapReduceFiles" folder created in step 3.
+- The following MATLAB data will be saved in the "output" folder created in step 3.
