@@ -62,7 +62,7 @@
   - "\*_SMLs_NP_drift.png", "\*_NP_hist_corr.png", "\*NP_hist_ori.png", "\*_NP_merge_corr.png", "\*_NP_merge_ori.png" will be created and saved for each valid NP.
   - After drift correction complete, "Selected_NP.csv" will be saved in the "image_output" folder.
   - "\*_SMLs_driftcorr.mat" files will be saved in the "output" folder for fields that has been drift-corrected.
-- Need libraries in "*\Yi-Han_edited_code\MATLAB_library*" and "*\Yi-Han_edited_code\MATLAB_library\HumphreyLibrary*".
+- Need libraries in "*YCC_Matlab*", "*\Yi-Han_edited_code\MATLAB_library*" and "*\Yi-Han_edited_code\MATLAB_library\HumphreyLibrary*".
 - Original filename: **two_dSTORM_ONI_bead_driftcorr_Step4_v2.m**.
 
 ### Step 5: Locate the virion in each field and identify the single molecule localizations originating from the immunofluorescence.
