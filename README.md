@@ -39,8 +39,10 @@
 - Original filename: one_dSTORM_ONI_parse_NP.m
 
 ### Step 4:
-- Drift correction processing. Automatically read all of the **NP images** saved in the "**output**" folder created in Step 3.
+- Drift correction processing. Automatically read all of the **NP images** saved in the "**image_output**" folder created in Step 3.
 - Set the **start frame** and **end frame** correctly based on the light program you used in imaging acquisition step.
-- Select the "output" folder.
-- 
+- Select the **"image_output"** folder.
+- ![image](https://github.com/ylu428/STORM-data-analysis/assets/41119470/e5bb4ef1-6708-4693-8d16-258fdb8ace83)
+
 - Need libraries in "YCC_Matlab" and "HumphreyLibrary"
+
