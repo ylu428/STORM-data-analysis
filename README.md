@@ -106,4 +106,4 @@
 ![image](https://github.com/ylu428/STORM-data-analysis/assets/41119470/13a6fd06-0bee-4178-918b-6da8fe4ce19c)
 - Save the plot after finishing label modification.
 - - Need libraries in "*YCC_Matlab*"
-- Original filename: **YiHan_pw_pdf_plot_ONI_EnvEnv_pc_5ABCD_2G12_AF647**
+- Original filename: **YiHan_pw_pdf_plot_ONI_EnvEnv_pc_5ABCD_2G12_AF647.m**
