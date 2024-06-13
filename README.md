@@ -48,7 +48,7 @@
 - The program can automatically read all of the **NP images** saved in the "**image_output**" folder created in Step 3.
 - Set the **start frame** and **end frame** correctly based on the light program you used in imaging acquisition step.
 - Select the **"image_output"** folder.
-- All of the NP scatter plots saved in the **"image_output"** folder will appear sequentially for user selection.
+- All of the NP scatter plots saved in the **"image_output"** folder will appear sequentially for user selection. (Scale bar: 100 nm)
 ![image](https://github.com/ylu428/STORM-data-analysis/assets/41119470/e5bb4ef1-6708-4693-8d16-258fdb8ace83)
   - Select "Yes" to choose this NP.
   - Select "No" to skip this NP.
@@ -72,4 +72,38 @@
 - Mapreduce process takes a long time. It could be 1-10 hours or more depends on number of fields, number of channels and how many virions per field.
 - Results of mapreduce are saved in the "MapReduceFiles" folder created in step 3.
 - The following MATLAB data will be saved in the "output" folder created in step 3.
-- 
+  - MapReduceFiles: Results of mapreduce are saved here.
+  -  output:
+     1. "*_SMLs_GFP_Particles.mat": MATLAB data file. Info of all AF647 SMLs. (1-color STORM)
+        "*_SMLs_GFP_Particles_0.mat" and "*_SMLs_GFP_Particles_1.mat": MATLAB data file for CF/AF568 and AF647, respectively. (2-color STORM)
+     2. "*_SMLsGFP_part-detection.png": Detected NPs.
+     3. "*_SMLsGFP_part-filtering.png"
+     4. "*_SMLs_GFP_Particles_GFPSMLs.mat" MATLAB data file for all GFP signals.
+- Need libraries in "*YCC_Matlab*" and "*\Yi-Han_edited_code\MATLAB_library*".
+- Original filename: **three_dSTORM_ONI_parse_GFP_nm_2color_SMLs.m**. (this script works for both 1-color and 2-color STORM) or **three_dSTORM_ONI_parse_GFP_nm_SMLs.m** (only works for 1-color STORM)
+
+### Step 6: DBSCAN for SMLs
+- The program will read files created in step 1 ("_GFP.tif" and "_SMLs.csv") and step 5 (["*_SMLs_GFP_Particles.mat"] or ["*_SMLs_GFP_Particles_0.mat" + "*_SMLs_GFP_Particles_1.mat"])
+- Utilize the user interface to select and read all **GFP_f1.tif** files for a single sample.
+- Support doing DBSCAN for 1-color or 2-color STORM. Set variable "two_color" to "true" for 2-color, "false" for 1-color.
+- Support multi-sample analysis by adjusting the number of files in "Sample", "stand_SML_n" and "Curr_SML_n"
+![image](https://github.com/ylu428/STORM-data-analysis/assets/41119470/486d877c-6670-40d8-af0e-67c50daff03a)
+- Adjust the number in "stand_SML_n" and "Curr_SML_n" to perform sample size adjustment.
+- Adjust or add numbers to "minSMLs_1" to do DBSCAN for clusters with different minimum size.
+- After finishing the analysis, a folder "analysis" will be created to save DBSCAN results, clustering images, pairwise info and other information.
+- Clustering imaging: (Scale bar: 100 nm)
+![SVA_58ABC_58C_SMLs-part-122 DB_15nm_20SMLs_GFP_2colorSMLs](https://github.com/ylu428/STORM-data-analysis/assets/41119470/70922ed3-21c3-44af-b37d-83daf5135aa6)
+- The following MATLAB files will be saved in "\analysis\output\clusinfo" folder.
+![image](https://github.com/ylu428/STORM-data-analysis/assets/41119470/4de368c0-1db6-4d91-b80c-6110dd480eed)
+- An excel file with SMLs and cluster's information will be saved in the "process" folder.
+- Need libraries in "*YCC_Matlab*" and "*\Yi-Han_edited_code\MATLAB_library*".
+- Original filename: **dSTORM_ONI_DB_removeGFPclosetoNP_20240606.m**
+
+### Step 7: Pairwise analysis
+- The program will read files created in step 6 ("*_DB15nm_20SMLs_pdist_cf568_cf568.mat" and "*_DB15nm_20SMLs_pdist_af647_af647.mat").
+- Run the script, select "*_DB15nm_20SMLs_pdist_cf568_cf568.mat" first then "*_DB15nm_20SMLs_pdist_af647_af647.mat" for 2-color STORM.
+- After the figure presented, modify the legend/title/axis labels by double click on them. Zoom in or out using mouse scroll wheel.
+![image](https://github.com/ylu428/STORM-data-analysis/assets/41119470/13a6fd06-0bee-4178-918b-6da8fe4ce19c)
+- Save the plot after finishing label modification.
+- - Need libraries in "*YCC_Matlab*"
+- Original filename: **YiHan_pw_pdf_plot_ONI_EnvEnv_pc_5ABCD_2G12_AF647**
