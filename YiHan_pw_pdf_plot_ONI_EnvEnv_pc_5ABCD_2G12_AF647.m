@@ -1,12 +1,17 @@
 clc;clear;
 addpath(genpath('M:\Yen-Cheng\YCC_Matlab'));
 
-[Myfiles1,Mypath1] = uigetfile({'*.mat';'*.*'}, 'Select "_pdist_af647_af647.mat" files', 'MultiSelect','on');
+[Myfiles1,Mypath1] = uigetfile({'*.mat';'*.*'}, 'Select "_pdist_af647_af647.mat" files', 'MultiSelect','off');
 load(strcat(Mypath1, Myfiles1));
-dataA = cumdist_AF647;
-clear cumdist_AF647
+try
+    dataA = cumdist_AF647;
+    clear cumdist_AF647
+catch
+    dataA = cumdist_CF568;
+    clear cumdist_CF568
+end
 
-[Myfiles2,Mypath2] = uigetfile({'*.mat';'*.*'}, 'Select "_pdist_af647_af647.mat" files', 'MultiSelect','on');
+[Myfiles2,Mypath2] = uigetfile({'*.mat';'*.*'}, 'Select "_pdist_af647_af647.mat" files', 'MultiSelect','off', Mypath1);
 load(strcat(Mypath2, Myfiles2));
 dataB = cumdist_AF647;
 clear cumdist_AF647
